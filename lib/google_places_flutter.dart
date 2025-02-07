@@ -148,7 +148,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     print("urlll $apiURL");
     try {
-      String proxyURL = ""; // "https://cors-anywhere.herokuapp.com/";
+      String proxyURL =  "https://api.allorigins.win/raw?url=";
       String url = kIsWeb ? proxyURL + apiURL : apiURL;
 
       /// Add the custom header to the options

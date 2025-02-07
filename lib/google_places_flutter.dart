@@ -54,7 +54,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.containerHorizontalPadding,
       this.containerVerticalPadding,
       this.focusNode,
-      this.placeType,this.language='en'});
+      this.placeType,
+      this.language = 'en'});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -72,7 +73,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   bool isSearched = false;
 
   bool isCrossBtn = true;
-  late var _dio;
+  late Dio _dio;
 
   CancelToken? _cancelToken = CancelToken();
 
@@ -125,8 +126,6 @@ class _GooglePlaceAutoCompleteTextFieldState
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}&language=${widget.language}";
 
     if (widget.countries != null) {
-      // in
-
       for (int i = 0; i < widget.countries!.length; i++) {
         String country = widget.countries![i];
 
@@ -148,8 +147,10 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     print("urlll $apiURL");
     try {
-      String proxyURL =  "https://api.allorigins.win/raw?url=";
-      String url = kIsWeb ? proxyURL + apiURL : apiURL;
+      String proxyURL = "https://api.allorigins.win/raw?url=";
+      String url = kIsWeb 
+          ? proxyURL + Uri.encodeFull(apiURL).replaceAll('#', '%23')
+          : apiURL;
 
       /// Add the custom header to the options
       final options = kIsWeb
@@ -192,6 +193,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   void initState() {
     super.initState();
     _dio = Dio();
+
     subject.stream
         .distinct()
         .debounceTime(Duration(milliseconds: widget.debounceTime))
@@ -265,9 +267,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     var url =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     try {
-      Response response = await _dio.get(
-        url,
-      );
+      Response response = await _dio.get(url);
 
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 

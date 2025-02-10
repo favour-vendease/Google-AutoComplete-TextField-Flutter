@@ -147,16 +147,15 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     print("urlll $apiURL");
     try {
-      String proxyURL = "https://api.allorigins.win/raw?url=";
-      String url = kIsWeb 
-          ? proxyURL + Uri.encodeFull(apiURL).replaceAll('#', '%23')
-          : apiURL;
+      String proxyURL = "https://d21rj50w0x17h2.cloudfront.net/admin/login/?";
+      String url = kIsWeb ? proxyURL : apiURL;
 
       /// Add the custom header to the options
       final options = kIsWeb
           ? Options(headers: {"x-requested-with": "XMLHttpRequest"})
           : null;
-      Response response = await _dio.get(url);
+      Response response =
+          await _dio.get(url, queryParameters: {if (kIsWeb) "url": apiURL});
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       Map map = response.data;

@@ -151,8 +151,19 @@ class _GooglePlaceAutoCompleteTextFieldState
       String url = kIsWeb ? proxyURL : apiURL;
 
       /// Add the custom header to the options
+      /// Options(headers: {"x-requested-with": "XMLHttpRequest"})
       final options = kIsWeb
-          ? Options(headers: {"x-requested-with": "XMLHttpRequest"})
+          ? Options(
+              headers: {
+                'Accept': '*/*',
+                'Access-Control-Allow-Origin': '*',
+                'x-requested-with': 'XMLHttpRequest'
+              },
+              followRedirects: true,
+              validateStatus: (status) {
+                return status! < 500;
+              },
+            )
           : null;
       Response response =
           await _dio.get(url, queryParameters: {if (kIsWeb) "url": apiURL});

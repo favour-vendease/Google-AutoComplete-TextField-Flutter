@@ -147,7 +147,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     print("urlll $apiURL");
     try {
-      String proxyURL = "https://d21rj50w0x17h2.cloudfront.net/admin/login/?";
+      String proxyURL = "https://d21rj50w0x17h2.cloudfront.net/core/proxy";
       String url = kIsWeb ? proxyURL : apiURL;
 
       /// Add the custom header to the options

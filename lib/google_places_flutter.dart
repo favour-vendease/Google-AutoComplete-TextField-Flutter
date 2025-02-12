@@ -272,18 +272,31 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
-    //String key = GlobalConfiguration().getString('google_maps_key');
-
-    var url =
+    var apiURL =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     try {
-      Response response = await _dio.get(url);
-
+      String proxyURL = "https://d21rj50w0x17h2.cloudfront.net/core/proxy";
+      String requestUrl = kIsWeb ? proxyURL : apiURL;
+      final options = kIsWeb
+          ? Options(
+              headers: {
+                'Accept': '*/*',
+                'Access-Control-Allow-Origin': '*',
+                'x-requested-with': 'XMLHttpRequest'
+              },
+              followRedirects: true,
+              validateStatus: (status) {
+                return status! < 500;
+              },
+            )
+          : null;
+      Response response = kIsWeb
+          ? await _dio.get(requestUrl,
+              queryParameters: {"url": apiURL}, options: options)
+          : await _dio.get(requestUrl);
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
-
       prediction.lat = placeDetails.result!.geometry!.location!.lat.toString();
       prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
-
       widget.getPlaceDetailWithLatLng!(prediction);
     } catch (e) {
       var errorHandler = ErrorHandler.internal().handleError(e);

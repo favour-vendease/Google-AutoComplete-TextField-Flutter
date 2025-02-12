@@ -2,12 +2,10 @@ library google_places_flutter;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/place_type.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-import 'package:rxdart/subjects.dart';
 import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -279,15 +277,7 @@ class _GooglePlaceAutoCompleteTextFieldState
       String requestUrl = kIsWeb ? proxyURL : apiURL;
       final options = kIsWeb
           ? Options(
-              headers: {
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'x-requested-with': 'XMLHttpRequest'
-              },
-              followRedirects: true,
-              validateStatus: (status) {
-                return status! < 500;
-              },
+              headers: {'x-requested-with': 'XMLHttpRequest'},
             )
           : null;
       Response response = kIsWeb
